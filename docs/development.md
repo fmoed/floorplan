@@ -35,7 +35,7 @@ skills/floorplan/
     viewer.html    the map (template the build fills in)
     ui/            viewer extensions: Theme button, blueprints, glossary, Health, recent work, screens, tour, waitlist card
     graph-query.js shared map lookups (viewer, query.mjs, Ask instructions)
-    serve.mjs      copied into each project's floorplan/ folder; answers through Claude Code or Codex
+    serve.mjs      copied into each project's floorplan/ folder; answers through Claude Code, Codex or Qoder
     page-safety.mjs  the one way data and code go into a page's <script> blocks, and its Content-Security-Policy
                    (used by build.mjs, and copied next to serve.mjs)
     query-cli.mjs  becomes floorplan/query.mjs
@@ -58,7 +58,7 @@ claude plugin install floorplan@floorplan
 
 A plugin installed from a local folder runs straight from it, so edits apply in the next session with no update step.
 
-To try it in Codex, see [Trying a working copy](codex.md#trying-a-working-copy). Codex copies a local plugin when you add it, so run `codex plugin add floorplan@floorplan` again after each change. `--agent claude|codex|none` on build.mjs (or `FLOORPLAN_AGENT`) and `--engine claude|codex` on serve.mjs let you try either agent's map from anywhere.
+To try it in Codex, see [Trying a working copy](codex.md#trying-a-working-copy). Codex copies a local plugin when you add it, so run `codex plugin add floorplan@floorplan` again after each change. To try it in Qoder, copy `skills/floorplan` into `~/.qoder/skills/` again after each change ([Floorplan in Qoder](qoder.md)). `--agent claude|codex|qoder|none` on build.mjs (or `FLOORPLAN_AGENT`) and `--engine claude|codex|qoder` on serve.mjs let you try any agent's map from anywhere.
 
 The scripts also run on their own, which is the fastest way to work on them:
 
@@ -100,8 +100,8 @@ The tests use Node's built-in test runner, so there's nothing to install (`npm t
 | `serve.test.mjs` | the map's server: 127.0.0.1 only, its own host names only, token and same-origin checks, nothing served from outside its folder |
 | `export.test.mjs` | exporting a copy to share: what's left out by default, the extras when asked, the Export button's endpoint |
 | `phone.test.mjs` | phone and tablet layout: the top bar wraps instead of overflowing, icon-only buttons keep a name, 44 px touch targets, the details sheet that opens when a box is tapped, the zoom buttons in the top row, the folding description and the AI-tool note shown only while asking (checks on the built page, not a real screen) |
-| `ask.test.mjs` | asking through Claude Code or Codex: which one is used, read-only, follow-ups, sign-in errors (stand-in CLIs in `fixtures/fake-cli/`) |
-| `agents.test.mjs` | telling Claude Code from Codex, and what a map built by each records and writes |
+| `ask.test.mjs` | asking through Claude Code, Codex or Qoder: which one is used, read-only, follow-ups, sign-in errors (stand-in CLIs in `fixtures/fake-cli/`) |
+| `agents.test.mjs` | telling Claude Code, Codex and Qoder apart, and what a map built by each records and writes |
 | `unattended.test.mjs` | running without an agent session: a small driver follows `workflow.json` through a first map and a refresh with canned answers, using only `--json` and exit codes; the optional plain-language step (reworded, left alone, rejected for changing more than wording, or failed, with the map completing every time); nothing written outside `floorplan/`, a map that names no agent, git failures that fail loudly, the workflow file's names and schemas, `maskSecrets` as a stable export, and no change without unattended mode |
 | `read-only-install.test.mjs` | a skill whose files are read-only builds a map twice, and the files it puts next to the map stay writable, including over read-only ones an earlier version left (skips itself where read-only doesn't stop the user writing) |
 | `release.test.mjs` | the version agrees across both plugins' `plugin.json`, the README badge, the changelog and `CHECKSUMS.txt` |

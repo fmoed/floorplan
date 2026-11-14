@@ -24,6 +24,15 @@ If it says Codex isn't signed in, open the Codex app (or run `codex login`) and 
 ### Codex: the map didn't open, or Ask stopped working after Codex opened it
 Codex runs commands in a sandbox, and the map's server needs to keep running and reach the network. Allow the server to run outside the sandbox when Codex asks, or run `node floorplan/serve.mjs` yourself from the project folder.
 
+### Qoder: the Ask bar says it needs the Qoder CLI
+The map's server looks for `qodercli` (or `qoder`) on your PATH, in `~/.local/bin` and in `~/.qoder/bin/qodercli`. Install the [Qoder CLI](https://docs.qoder.com/cli/overview), or point the server at yours:
+
+```bash
+node floorplan/serve.mjs --qoder /path/to/qodercli
+```
+
+If it says the Qoder CLI isn't signed in, run `qodercli` in a terminal and sign in with `/login`. More in [Floorplan in Qoder](qoder.md).
+
 ### `node` isn't recognized
 Install [Node.js](https://nodejs.org) 18 or newer, then start a new session so Claude Code or Codex picks it up.
 
@@ -48,7 +57,7 @@ Ask Claude or Codex to "update the floorplan". If a tab was already open, it rel
 Maps made before version 0.1.3 load their layout engine from the internet, so check your connection or any content blocker, or ask Claude to "update the floorplan". Newer maps have everything built in and work offline.
 
 ### The Ask bar has no Change switch
-**Change** appears only on a [blueprint](getting-started.md#plan-something-you-havent-built-yet), opened through its server (`node floorplan/serve.mjs`) with the Claude Code CLI or Codex available. A map of real code doesn't have it: ask Claude Code or Codex to change the code, then update the floorplan.
+**Change** appears only on a [blueprint](getting-started.md#plan-something-you-havent-built-yet), opened through its server (`node floorplan/serve.mjs`) with the Claude Code CLI or Codex available. Qoder's CLI can't hold an answer to a schema, so with Qoder the bar stays on **Ask**. A map of real code doesn't have it: ask your agent to change the code, then update the floorplan.
 
 ### A change to a blueprint failed, or I don't like it
 If the updated plan doesn't pass Floorplan's checks after a second try, nothing is saved and the map stays as it was; try asking more specifically. If a change went through but isn't what you wanted, press **Undo** in its summary, or ask for another change. The previous versions are kept in `floorplan/.cache/history/`.

@@ -51,7 +51,7 @@ All three turn code into something you can see, and all three are worth knowing.
 | **Made for** | People who build with AI and don't read the code | Anyone explaining a system, a process or an idea | Developers getting to know a large codebase |
 | **What you get** | A zoomable map of your whole app: parts, files and endpoints, the screens, the requests between frontend and backend (even across repos), and outside services | A polished diagram in one of 10 types (architecture, sequence, ERD…) or a one-page explainer, from a repo or just a description | A knowledge graph of every file, function and class, with layers, a business-domain view and guided tours |
 | **Only here** | **Health check** (keys in code, open Supabase tables and Firebase rules, fakeable Stripe webhooks, endpoints anyone can use), **Recent work** (what your AI just changed, and why), blueprints from a PRD | 10 diagram types, image and video exports, diagrams of things that aren't code | Diff impact, a dashboard that adapts to your role, knowledge-base graphs |
-| **Runs in** | Claude Code, Codex | Claude Code, Codex, Cursor, OpenCode and more | Claude Code, Codex, Cursor, Copilot, Gemini CLI and more |
+| **Runs in** | Claude Code, Codex, Qoder | Claude Code, Codex, Cursor, OpenCode and more | Claude Code, Codex, Cursor, Copilot, Gemini CLI and more |
 
 **Pick Floorplan** to understand and check an app you own. **Pick Archify** to draw a diagram for a doc, a talk or a decision. **Pick Understand Anything** to study a large codebase function by function.
 
@@ -163,7 +163,7 @@ Want to click around yourself? Open the [live demo](https://haydenschmitty.githu
 
 ## Install
 
-You need [Node.js 18+](https://nodejs.org) and either Claude Code or Codex. Floorplan runs on the plan you already have, with no API keys.
+You need [Node.js 18+](https://nodejs.org) and Claude Code, Codex or Qoder. Floorplan runs on the plan you already have, with no API keys.
 
 ### Claude Code
 
@@ -192,6 +192,17 @@ codex plugin add floorplan@floorplan
 ```
 
 Start a new chat and ask for a floorplan, or type `$floorplan`. The map's Ask bar runs on your own Codex sign-in, with no API key. More in [Floorplan in Codex](docs/codex.md).
+
+### Qoder
+
+Copy the skill folder into Qoder's skills folder (`~/.qoder/skills/`, or `%USERPROFILE%\.qoder\skills\` on Windows):
+
+```bash
+git clone https://github.com/haydenschmitty/floorplan
+cp -R floorplan/skills/floorplan ~/.qoder/skills/
+```
+
+Start a new session and ask for a floorplan. The map's Ask bar runs on your own Qoder sign-in, with no API key. More in [Floorplan in Qoder](docs/qoder.md).
 
 ## Quick start
 
@@ -244,13 +255,13 @@ Scripts do the mechanical work: finding repos, parsing code in a dozen languages
 
 ## What it adds to your project
 
-A `floorplan/` folder holding the map. In Claude Code, if you say yes, it also adds a short section to `CLAUDE.local.md` so future sessions know the map is there. **Neither is committed:** the folder ignores itself in git, and `CLAUDE.local.md` goes in your clone's private ignore list. In Codex, only the `floorplan/` folder is added. Your `.gitignore` and other tracked files are never touched. See [What's in your project](docs/project-files.md).
+A `floorplan/` folder holding the map. In Claude Code, if you say yes, it also adds a short section to `CLAUDE.local.md` so future sessions know the map is there. **Neither is committed:** the folder ignores itself in git, and `CLAUDE.local.md` goes in your clone's private ignore list. In Codex and Qoder, only the `floorplan/` folder is added. Your `.gitignore` and other tracked files are never touched. See [What's in your project](docs/project-files.md).
 
 ## Privacy
 
 - The scan, the map and its small local server all run on your computer. The server only accepts connections from your own machine.
 - No dependencies or install scripts, and the map works offline: its layout engine and fonts are built in.
-- Questions on the map go to your own account, through the Claude Code CLI or Codex, which can read your code but not change it.
+- Questions on the map go to your own account, through the Claude Code CLI, Codex or Qoder, which can read your code but not change it.
 - The Health check never stores or shows secret values, only where they are.
 - No analytics or tracking. The map may ask once whether you'd like an email when Floorplan Cloud launches. Nothing is sent unless you sign up, and then only your email and "just me" or "with my team".
 
@@ -262,6 +273,7 @@ More in [Privacy and security](docs/privacy-and-security.md). Wondering whether 
 |---|---|
 | [Getting started](docs/getting-started.md) | Install, first map, updating, planning from a PRD, removing |
 | [Floorplan in Codex](docs/codex.md) | Installing and using it in Codex |
+| [Floorplan in Qoder](docs/qoder.md) | Installing and using it in Qoder |
 | [Using the map](docs/using-the-map.md) | Every button, view, shortcut and menu |
 | [How it works](docs/how-it-works.md) | The pipeline, connection matching, refreshes |
 | [What's in your project](docs/project-files.md) | Every file Floorplan creates, and how to edit it |
@@ -294,7 +306,7 @@ A first map takes a few minutes for a small app and longer for a big one, becaus
 <details>
 <summary><b>Do I need a CLI for the Ask bar?</b></summary>
 
-No. The map works without one. The Ask bar answers through the Claude Code CLI or Codex, which can read your real code. Codex's desktop app already includes what it needs. With Claude, without the CLI you can ask from the Claude app instead, using the map alone.
+No. The map works without one. The Ask bar answers through the Claude Code CLI, Codex or Qoder, which can read your real code. Codex's desktop app already includes what it needs. With Claude, without the CLI you can ask from the Claude app instead, using the map alone.
 </details>
 
 <details>

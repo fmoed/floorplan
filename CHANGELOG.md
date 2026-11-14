@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- **Floorplan works in Qoder:** a map built under Qoder now says so, instead of naming Claude Code, so the Ask bar and the Health panel's fix prompts name Qoder. Questions on the map can run through the Qoder CLI (`qodercli -p`) on your own Qoder sign-in, in your project folder, read-only: it gets Read, Grep, Glob and a Bash command limited to `floorplan/query.mjs`, anything that would ask for permission is denied, and your own MCP servers stay out of the run. The server finds `qodercli` (or `qoder`) on PATH, in `~/.local/bin` or in `~/.qoder/bin/qodercli`; `--engine qoder` chooses it and `--qoder <path>` points at an unusual install. Qoder's CLI has no way to hold an answer to a schema, so a blueprint's Ask bar stays on **Ask** with this engine, and the project's notes are left alone, as they are under Codex. See [Floorplan in Qoder](docs/qoder.md).
+
 ## 0.8.0 (2026-11-12)
 
 - **An embedded map can hand "Ask about this" to the page around it:** an exported copy shown inside another page has no Ask bar, so its right-click menu had no Ask items. The page can now opt in by adding `ask=host` to the map's address. **Ask about this** then appears on cards, lines and the background, and sends that page a `floorplan:ask` message with the chosen items' ids and names, so its own Ask can take the question. Nothing changes for maps opened without it. See [Embedding the map](docs/using-the-map.md#handing-ask-about-this-to-the-page-around-the-map).

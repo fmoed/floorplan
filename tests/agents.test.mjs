@@ -1,4 +1,4 @@
-// Claude Code and Codex: the skill notices which one is running it, and the map remembers, so its
+// Claude Code, Codex and Qoder: the skill notices which one is running it, and the map remembers, so its
 // Ask bar and "Fix with …" prompts name the right one. Only Claude Code gets the CLAUDE.local.md note.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -22,6 +22,11 @@ test('--agent and FLOORPLAN_AGENT override the guess, and nonsense is ignored', 
   assert.equal(detectAgent({ agent: 'gpt' }, { CODEX_THREAD_ID: 'abc' }), 'codex');
 });
 
+test('Qoder is recognised by the variable it sets for every command', () => {
+  assert.equal(detectAgent({}, { QODER_CLI: '1' }), 'qoder');
+  assert.equal(detectAgent({ agent: 'claude' }, { QODER_CLI: '1' }), 'claude');
+});
+
 test('a map built under Codex records it, and leaves the project notes alone', () => {
   const root = shopApp();
   try {
@@ -29,6 +34,18 @@ test('a map built under Codex records it, and leaves the project notes alone', (
     const out = run('build.mjs', root, '--agent', 'codex');
     assert.equal(readGraph(root).meta.agent, 'codex');
     assert.match(out, /AGENT {2}Codex/);
+    assert.ok(!fs.existsSync(path.join(root, 'CLAUDE.local.md')), 'no CLAUDE.local.md');
+    assert.ok(!fs.existsSync(path.join(root, 'AGENTS.md')), 'no AGENTS.md');
+  } finally { cleanup(root); }
+});
+
+test('a map built under Qoder records it, and leaves the project notes alone', () => {
+  const root = shopApp();
+  try {
+    run('scan.mjs', root);
+    const out = run('build.mjs', root, '--agent', 'qoder');
+    assert.equal(readGraph(root).meta.agent, 'qoder');
+    assert.match(out, /AGENT {2}Qoder/);
     assert.ok(!fs.existsSync(path.join(root, 'CLAUDE.local.md')), 'no CLAUDE.local.md');
     assert.ok(!fs.existsSync(path.join(root, 'AGENTS.md')), 'no AGENTS.md');
   } finally { cleanup(root); }

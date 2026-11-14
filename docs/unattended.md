@@ -229,7 +229,7 @@ Two `descriptions` jobs, one per worksheet, each writing its `descriptions` file
 ## What isn't covered
 
 - **Blueprints**, maps planned from a PRD, need a person to answer questions, so the workflow file doesn't make them. A refresh of an existing blueprint still works.
-- **Asking questions on the map**, requesting flows and changing a blueprint from the map need the map's server and Claude Code or Codex, as usual.
+- **Asking questions on the map**, requesting flows and changing a blueprint from the map need the map's server and Claude Code, Codex or Qoder, as usual.
 
 ## Keeping it working
 

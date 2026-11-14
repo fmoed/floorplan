@@ -1,6 +1,6 @@
-// Asking questions on the map: serve.mjs runs the Claude Code CLI or Codex on the person's own sign-in,
-// read-only, and turns their event stream into progress lines and an answer board. Stand-in CLIs
-// (fixtures/fake-cli) record what they were given, so these run without either one installed.
+// Asking questions on the map: serve.mjs runs the Claude Code CLI, Codex or Qoder on the person's own
+// sign-in, read-only, and turns their event stream into progress lines and an answer board. Stand-in CLIs
+// (fixtures/fake-cli) record what they were given, so these run without any of them installed.
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -128,6 +128,50 @@ test('--engine picks one CLI and never falls back to the other', async () => {
   const [failure] = pick(await ask(s, 'Anything?'), 'failure');
   assert.equal(failure.code, 'cli_missing');
   assert.match(failure.message, /Codex not found/);
+});
+
+test('with only Qoder installed, questions run through the Qoder CLI, read-only, and follow-ups resume', async () => {
+  const s = await serve({ FLOORPLAN_CLAUDE: path.join(root, 'no-such-cli'), FLOORPLAN_CODEX: path.join(root, 'no-such-cli'), FLOORPLAN_QODER: path.join(FAKE, 'fake-qoder.mjs') });
+  assert.equal(s.page.engine, 'qoder');
+  assert.equal(s.page.cli, true);
+  assert.equal(s.page.change, false, 'Qoder has no schema flag, so the map offers no Change');
+
+  const events = await ask(s, 'How do refunds work?');
+  assert.deepEqual(pick(events, 'progress').map((p) => p.text), ['Reading the map overview', 'Reading shop-api/routes/orders.js']);
+  const [answer] = pick(events, 'answer');
+  assert.equal(answer.title, 'Refunds', 'the answer is read out of the result text');
+  assert.deepEqual(answer.items.map((i) => i.id), ['f:shop-api/routes/orders.js']);
+  assert.equal(answer.session, 'test-session');
+
+  const [call] = s.calls();
+  const flag = (name) => call.args[call.args.indexOf(name) + 1];
+  assert.ok(call.args.includes('-p'));
+  assert.equal(flag('--output-format'), 'stream-json');
+  assert.equal(flag('--tools'), 'Read,Grep,Glob,Bash');
+  assert.equal(flag('--allowed-tools'), 'Bash(node floorplan/query.mjs:*),Read,Grep,Glob');
+  assert.equal(flag('--permission-mode'), 'dont_ask');
+  assert.ok(call.args.includes('--strict-mcp-config'), "the person's own MCP servers stay out of the run");
+  assert.equal(call.input, 'How do refunds work?');
+
+  await ask(s, 'And then?', answer.session);
+  const second = s.calls()[1];
+  assert.equal(second.args[second.args.indexOf('--resume') + 1], 'test-session');
+});
+
+test('a signed-out Qoder says so, from the errors on its result rather than a result text', async () => {
+  const s = await serve({ FLOORPLAN_CLAUDE: path.join(root, 'no-such-cli'), FLOORPLAN_CODEX: path.join(root, 'no-such-cli'), FLOORPLAN_QODER: path.join(FAKE, 'fake-qoder.mjs') });
+  const [failure] = pick(await ask(s, 'SIGNED-OUT question'), 'failure');
+  assert.equal(failure.code, 'not_logged_in');
+  assert.match(failure.message, /\/login/);
+});
+
+test('--engine qoder with no Qoder installed says what to install, and never falls back', async () => {
+  const s = await serve({ FLOORPLAN_ENGINE: 'qoder', FLOORPLAN_CLAUDE: path.join(FAKE, 'fake-claude.mjs'), FLOORPLAN_QODER: path.join(root, 'no-such-cli') });
+  assert.equal(s.page.cli, false);
+  assert.equal(s.page.want, 'qoder');
+  const [failure] = pick(await ask(s, 'Anything?'), 'failure');
+  assert.equal(failure.code, 'cli_missing');
+  assert.match(failure.message, /Qoder not found/);
 });
 
 // Windows: a newer npm install of Claude Code has the real program at <npm>/node_modules/@anthropic-ai/claude-code/bin/claude.exe, no cli.js, and only

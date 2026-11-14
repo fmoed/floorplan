@@ -7,11 +7,12 @@ For what the plugin itself can and can't do on your computer (no hooks, MCP serv
 | Part | Where it runs | What it sends |
 |---|---|---|
 | Scan, build, updates | your computer (Node.js) | nothing |
-| Writing names and descriptions | Claude or Codex, through your session | the files it reads, the same as any other task you give it |
+| Writing names and descriptions | Claude, Codex or Qoder, through your session | the files it reads, the same as any other task you give it |
 | The map | your browser | nothing. Its layout engine and fonts are bundled into the file, so it works offline |
 | The map's server (`serve.mjs`) | your computer, listening on `127.0.0.1` only | nothing on its own |
 | Asking questions (Claude Code CLI) | a `claude -p` session on your computer, with your account | your question, and the files Claude chooses to read |
 | Asking questions (Codex) | a `codex exec` run on your computer, with your ChatGPT sign-in, not saved to your Codex history | your question, and the files Codex chooses to read |
+| Asking questions (Qoder) | a `qodercli -p` run on your computer, with your Qoder sign-in | your question, and the files Qoder chooses to read |
 | Changing a blueprint from the map | the same as asking questions, with Claude Code or Codex; the map's server then writes only the plan's files in `floorplan/` | your request, and the files the AI chooses to read |
 | Asking questions (Claude app) | your claude.ai account | the map (names, descriptions, structure), never your source code. Claude asks before publishing it there |
 | Exporting a copy | your computer: the map's server writes one HTML file | nothing. You decide who gets the file. It holds the map, plus Health or recent work only if you tick them, and never your folder path, git remotes or source code |
